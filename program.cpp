@@ -51,38 +51,89 @@ int WriteAll(){
 
 void Empleado::GetEmpleadoByName(string nombre){
 	char buffer[MAX_BUFFER];
+	bool cam=true;
+	char s[2];
+	uint16_t r_size;
 	Empleado p;
 	int cont=0;
 	ifstream f;
-	//cout<< "Nombres  Apellidos  Cedula Sueldo Edad"<< endl;
 	
 	f.open("empleado.txt");
-	
-	while(1)
+	if(!f){
+		cout<<"Erro al abrir el archivo empleado.txt";
+		return;
+	}
+
+	while(cam)
 	{
-		f.read(0,ios::beg);
+		f.read(s,2);
+		memcpy(&r_size, s,2);
+		f.read(buffer,r_size);
 		
-		if(strcmp(nombre,Nombres)==0){
+		p.SetBuffer(buffer, r_size);
+
+		if(nombre==p.Nombres){
+			cout<<"aqui\n";
 			
 			p.Print();
+			break;
+		}else{
+			f.tellg();
+			cam=true;
 		}
-		if(f.eof()); break;
+
+	}if(f.eof());
+	f.close();
+}
+
+void Empleado::crearIndice(){
+	fstream f;
+	fstream l;
+	char buffer[MAX_BUFFER];
+	char* bufferindex[100];
+	bufferindex[0]=0;
+	uint16_t size;
+	char* name;
+	Empleado emple;
+
+	f.open("indice.txt");
+	l.open("empleado.txt");
+
+	while(1){
+		int offset=f.tellp();
+		f.read(buffer,size);
+		f.read((char*)&offset,sizeof(int));
+		if(f.eof())break;
+		emple.SetBuffer(buffer,size);
+	}
+
+	cout<<"\nIngrese nombre pa buscar: "<<endl;
+	cin>>name;
+	if(emple.Nombres==name){
+		
+		int offset=f.tellg();
+		f.write((char*)&offset,2);
+		f.write((char*)&emple.Nombres,size);
 
 	}
 	f.close();
-
+	l.close();
 }
 
 
 
+//abrir un zip y extraer lo que tiene, metodo estandar
+//leer binariamente los encabezados del zio yleer las entradas
+//
+
 int main(int argc, char **argv){
 	Empleado p;
 	if (strcmp(argv[1], "1") == 0) ReadAll();	
-	if (strcmp(argv[1], "2") == 0) WriteAll();
+	if (strcmp(argv[1], "2") == 0) p.crearIndice();
+	cout<<"\n";
+		//p.GetEmpleadoByName("Daniel");
+	//ReadAll();
 
-	if(strcmp(argv[1],"3")==0){
-		p.GetEmpleadoByName("Daniel");
-	}
-	
+	//p.crearIndice();	
+	//p.countCharLineSpace();
 }	
-
