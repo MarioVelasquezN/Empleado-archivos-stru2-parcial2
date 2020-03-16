@@ -22,6 +22,7 @@ class Empleado{
 		int Copy2Buffer(char *);
 		int CopyFromBuffer(char *, char *);
     public:
+	
 		uint16_t SIZE;		
 		char *BUFFER_REG;
         char Nombres[101];
@@ -35,6 +36,7 @@ class Empleado{
 		void SetBuffer(const char *, int);
 		void Write();
 		void GetEmpleadoByName(string);
+		void crearIndice();
+		void leerIndice();
 		
 };
-
